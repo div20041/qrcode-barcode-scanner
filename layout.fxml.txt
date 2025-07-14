@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.QRScannerController">
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+
+            <!-- Camera Tab -->
+            <Tab text="Scan from Camera">
+                <VBox spacing="10" padding="10">
+                    <ImageView fx:id="cameraView" fitWidth="640" fitHeight="480" preserveRatio="true"/>
+                    <HBox spacing="10">
+                        <Button text="Start Camera" onAction="#handleStartCamera"/>
+                        <Button text="Stop Camera" onAction="#handleStopCamera"/>
+                    </HBox>
+                    <Label text="Detected QR Code:"/>
+                    <TextArea fx:id="cameraResult" editable="false" prefRowCount="2"/>
+                </VBox>
+            </Tab>
+
+            <!-- File Scan Tab -->
+            <Tab text="Scan from File">
+                <VBox spacing="10" padding="10">
+                    <Button text="Choose Image File" onAction="#handleScanFromFile"/>
+                    <Label text="Detected QR Code:"/>
+                    <TextArea fx:id="fileResult" editable="false" prefRowCount="2"/>
+                </VBox>
+            </Tab>
+
+            <!-- History Tab -->
+            <Tab text="History">
+                <VBox spacing="10" padding="10">
+                    <TableView fx:id="historyTable">
+                        <columns>
+                            <TableColumn fx:id="timeColumn" text="Timestamp" prefWidth="250"/>
+                            <TableColumn fx:id="contentColumn" text="QR Content" prefWidth="500"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+</BorderPane>
