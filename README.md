@@ -1,4 +1,13 @@
 # qrcode-barcode-scanner
+**The main goal of this project is to build a smart desktop application that:**
+
+Scans QR codes and barcodes using the system’s camera or images.
+
+Automatically detects and classifies the content (like URL, email, text, etc.) using machine learning (Weka).
+
+Logs scan history into a local database (SQLite) for future reference.
+
+
 qrscanner/
 ├── pom.xml                           # Maven configuration file
 ├── scan_history.csv                  # (Generated at runtime if exporting)
