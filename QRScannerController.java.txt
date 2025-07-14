@@ -1,0 +1,79 @@
+package com.example;
+
+import com.github.sarxos.webcam.Webcam;
+import com.google.zxing.*;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+public class QRScannerApp extends JFrame {
+
+    private Webcam webcam;
+    private JLabel resultLabel;
+
+    public QRScannerApp() {
+        setTitle("QR Code Scanner");
+        setSize(400, 300);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        resultLabel = new JLabel("Scan result will appear here");
+        add(resultLabel, BorderLayout.SOUTH);
+
+        initWebcam();
+    }
+
+    private void initWebcam() {
+        webcam = Webcam.getDefault();
+        webcam.setViewSize(new Dimension(320, 240));
+        webcam.open();
+
+        JLabel webcamView = new JLabel(new ImageIcon());
+        add(webcamView, BorderLayout.CENTER);
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            while (true) {
+                BufferedImage image = webcam.getImage();
+                webcamView.setIcon(new ImageIcon(image));
+
+                String result = decodeQR(image);
+                if (result != null) {
+                    resultLabel.setText("QR Code: " + result);
+                    break;
+                }
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+            webcam.close();
+        });
+    }
+
+    private String decodeQR(BufferedImage image) {
+        if (image == null) return null;
+        LuminanceSource source = new BufferedImageLuminanceSource(image);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+        try {
+            Result result = new MultiFormatReader().decode(bitmap);
+            return result.getText();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            QRScannerApp app = new QRScannerApp();
+            app.setVisible(true);
+        });
+    }
+}
